@@ -25,11 +25,7 @@ class Wallet:
             print("지출 금액은 음수가 될 수 없습니다.")
 
 if __name__ == "__main__":
-    # Wallet 클래스를 직접 실행할 때의 코드
     my_wallet = Wallet()
-
-    # 자산 확인
-    print("현재 자산:", my_wallet.get_money())
 
     # 입금
     my_wallet.add_money(500)
@@ -40,5 +36,4 @@ if __name__ == "__main__":
     # 지출
     my_wallet.spend_money(300)
 
-    # 자산 확인
-    print("현재 자산:", my_wallet.get_money())
+
