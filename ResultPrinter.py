@@ -35,8 +35,9 @@ class ResultPrinter(FinanceManager):
             data_dict_list.append(data_dict)
         self.data = pd.DataFrame(data_dict_list)
 
-    def printColumnGraph(self, column_data_x, column_data_y, x_label, y_label, title):
+    def printColumnGraph(self, column_data_x, column_data_y, x_label, y_label, title, figsize=(12, 8)):
         if not isinstance(column_data_x, str) and not isinstance(column_data_y, str):
+            plt.figure(figsize=figsize)  # Set the size of the figure
             plt.plot(column_data_x, column_data_y)
             plt.xlabel(x_label)
             plt.ylabel(y_label)
@@ -45,9 +46,10 @@ class ResultPrinter(FinanceManager):
         else:
             print("Error: Invalid column data.")
 
+
 if __name__ == "__main__":
     rp = ResultPrinter()
-    rp.get_sise_days('005930')
+    rp.get_sise_days('005930',30)
 
     # CSV 파일로 저장
     rp.save_to_csv('stock_data.csv')
@@ -56,8 +58,8 @@ if __name__ == "__main__":
     rp.load_from_csv('stock_data.csv')
 
     # 열 데이터 가져오기
-    column_data_y = rp.get_column_data('종가')  
-    column_data_x = rp.get_column_data('날짜')  
+    column_data_y = rp.get_column_data('종가')
+    column_data_x = rp.get_column_data('날짜')
     column_data_x = column_data_x.astype(str).str[-4:]
     # 출력
     if not isinstance(column_data_y, str) and not isinstance(column_data_x, str):
