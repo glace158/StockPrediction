@@ -1,14 +1,10 @@
-
-
 class Wallet:
     def __init__(self):
-        self.balance = 0
+        self.balance = 10000000
+        self.initial_balance = 10000000
 
-    def set_money(self, money):
-        if money >= 0:
-            self.balance = money
-        else:
-            print("자산은 음수가 될 수 없습니다.")
+    def get_initial_money(self):
+        return self.initial_balance
 
     def get_money(self):
         return self.balance
@@ -31,9 +27,6 @@ class Wallet:
 if __name__ == "__main__":
     # Wallet 클래스를 직접 실행할 때의 코드
     my_wallet = Wallet()
-
-    # 자산 설정
-    my_wallet.set_money(1000)
 
     # 자산 확인
     print("현재 자산:", my_wallet.get_money())
