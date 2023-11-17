@@ -40,9 +40,10 @@ class Regression():
         if i % epoch == 0:
           print("{:5}|{:10.4f}|{:10.4f}|{:10.6f}".format(i, self._W.numpy()[0], self._b.numpy()[0], cost))
     
-    plt.plot(np_x_datas, np_y_datas, 'o')
-    plt.plot(np_x_datas, hypothesis.numpy(), 'r-')
-    plt.show()
+    #plt.plot(np_x_datas, np_y_datas, 'o')
+    #plt.plot(np_x_datas, hypothesis.numpy(), 'r-')
+    #plt.show()
+  
     return self._W, self._b
 
   def predict(self, date):

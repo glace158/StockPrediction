@@ -8,9 +8,19 @@ print(len(highs))
 print(len(lows))
 
 flag_pattern = FlagPattern()
+buy_sell_dict = {}
+
 for i in range(len(highs)):
   print()
   print("=====================================")
   print(date[i])
   result = flag_pattern.pattern_match(highs[i], lows[i])
+  
+  if result[0] != None:
+    buy_sell_dict[date[i]] = result[0]
+
   print(result)
+
+  print()
+  for key, val in buy_sell_dict.items():
+    print(key, ":", val)
