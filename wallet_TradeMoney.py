@@ -29,16 +29,15 @@ class TradeManager:
         buy_amount = int(self.money * percent / 100)
         print(f"Wallet buy: {buy_amount} won")
         return buy_amount
-
-    def sell(self, percent):
+     def sell(self, percent):
         sell_amount = int(self.money * percent / 100)
         print(f"Wallet sell: {sell_amount} won")
         return sell_amount
-    def calculate_dividend_yield(annual_dividend, current_price):
-    try:
+     def calculate_dividend_yield(annual_dividend, current_price):
+     try:
         dividend_yield = (annual_dividend / current_price) * 100
         return dividend_yield
-    except ZeroDivisionError:
+     except ZeroDivisionError:
         print("Error: 현재 주가는 0이 될 수 없습니다.")
         return None
 
