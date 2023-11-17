@@ -55,37 +55,13 @@ class ResultPrinter(FinanceManager):
             return return_rate
         else:
             print("Initial money is 0. Cannot calculate return rate.")
-
-if __name__ == "__main__":
-  # Wallet 클래스를 직접 실행할 때의 코드
-    my_wallet = Wallet()
-    rp = ResultPrinter(my_wallet)
-    rp.get_sise_days('005930')
-
-    # CSV 파일로 저장
-    rp.save_to_csv('stock_data.csv')
-
-    # CSV 파일 불러오기
-    rp.load_from_csv('stock_data.csv')
-
-    # 열 데이터 가져오기
-    column_data_y = rp.get_column_data('종가')  
-    column_data_x = rp.get_column_data('날짜')  
-    column_data_x = column_data_x.astype(str).str[-4:]
-    # 출력
-    if not isinstance(column_data_y, str) and not isinstance(column_data_x, str):
-        rp.printColumnGraph(column_data_x, column_data_y, 'Date', 'Open Price', 'Stock Open Price Over Time')
-    print(column_data_y)
-    print(column_data_x)
-    
-
-    # 자산 확인
-    my_wallet.add_money(50000)
-    print("현재 자산:", my_wallet.get_money())
-    print("초기 자산:", my_wallet.get_initial_money())
-
-    # ResultPrinter 클래스를 사용하여 수익률 출력
-    result_printer = ResultPrinter(my_wallet)
-    return_rate = result_printer.calculate_return_rate()
-    if return_rate is not None:
-        print("수익률: {:.2f}%".format(return_rate))
+     @staticmethod
+    def market_watch(wallet, percent, decision):
+        if decision is True:
+            result = TradeManager.buy(wallet, percent)
+            return result
+        elif decision is False:
+            result = TradeManager.sell(wallet, percent)
+            return result
+        elif decision is None:
+            pass 
