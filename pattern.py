@@ -1,4 +1,5 @@
 import numpy as np
+from regression import Regression
 
 class FlagPattern():
   def __init__(self):
