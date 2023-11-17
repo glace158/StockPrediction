@@ -24,16 +24,22 @@ class Wallet:
         else:
             print("지출 금액은 음수가 될 수 없습니다.")
 
-if __name__ == "__main__":
-    my_wallet = Wallet()
+class TradeManager:
+     def buy(self, percent):
+        buy_amount = int(self.money * percent / 100)
+        print(f"Wallet buy: {buy_amount} won")
+        return buy_amount
 
-    # 입금
-    my_wallet.add_money(500)
-
-    # 자산 확인
-    print("현재 자산:", my_wallet.get_money())
-
-    # 지출
-    my_wallet.spend_money(300)
+    def sell(self, percent):
+        sell_amount = int(self.money * percent / 100)
+        print(f"Wallet sell: {sell_amount} won")
+        return sell_amount
+    def calculate_dividend_yield(annual_dividend, current_price):
+    try:
+        dividend_yield = (annual_dividend / current_price) * 100
+        return dividend_yield
+    except ZeroDivisionError:
+        print("Error: 현재 주가는 0이 될 수 없습니다.")
+        return None
 
 
