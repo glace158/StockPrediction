@@ -16,7 +16,7 @@ class FlagPattern():
     self._same_rate = rate
 
   def pattern_match(self, high_data, low_data):
-    self._add_datas(high_data, low_data)
+    
     print("highs :", self._high_datas)
     print("lows :", self._low_datas)
     print()
@@ -47,6 +47,7 @@ class FlagPattern():
     
   def _matching_result(self, high_data, low_data, high_rate, low_rate):
     if (not high_rate) or (not low_rate):
+      self._add_datas(high_data, low_data)
       return None, -1.0
 
     if (-1 * self._same_rate) > low_rate:

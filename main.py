@@ -1,26 +1,48 @@
 from pattern import FlagPattern
+from FinanceManager import FinanceManager
+from ResultPrinter import ResultPrinter
+from stockDecide import Decide
+from Wallet_walletManager import WalletManager
 
-date = [20201105, 20201106, 20201109, 20201110, 20201111, 20201112, 20201113, 20201116, 20201117, 20201118, 20201119, 20201120, 20201123, 20201124, 20201125, 20201126, 20201127, 20201130, 20201201, 20201202, 20201203,20201204, 20201207, 20201208 ,20201209, 20201210, 20201211, 20201214, 20201215, 20201216, 20201217, 20201218, 20201221, 20201222, 20201223, 20201224, 20201228, 20201229, 20201230, 20210104, 20210105, 20210106, 20210107, 20210108, 20210111, 20210112, 20210113, 20210114, 20210115, 20210118, 20210119, 20210120, 20210121, 20210122, 20210125, 20210126, 20210127, 20210128, 20210129, 20210201, 20210202, 20210203, 20210204, 20210205, 20210208, 20210209, 20210210, 20210215, 20210216, 20210217, 20210218, 20210219, 20210222, 20210223, 20210224, 20210225, 20210226, 20210302, 20210303, 20210304, 20210305, 20210308, 20210309, 20210310, 20210311, 20210312, 20210315, 20210316, 20210317, 20210318, 20210319, 20210322, 20210323, 20210324, 20210325, 20210326, 20210329, 20210330, 20210331, 20210401, 20210402, 20210405, 20210406, 20210407, 20210408, 20210409, 20210412, 20210413, 20210414, 20210415, 20210416, 20210419]
-highs = [60300,60800,60900,60500,61400,61400,63200,66700,67000,66200,64800,65200,67800,69500,68300,68000,68400,68600,68300,69900,70500,72100,73500,72900,73900,73800,73800,74500,74100,74500,73700,73700,73400,73200,74000,78800,80100,78900,81300,84400,83900,84500,84200,90000,96800,91400,91200,90000,91800,87300,88000,89000,88600,89700,89900,89200,87700,85600,85000,83400,86400,85400,83800,84000,84200,84800,82600,84500,86000,84200,83600,82800,84200,82900,83600,85400,83400,85300,84000,83200,82600,83000,81900,82500,82500,83500,82900,83000,82900,83800,82500,82300,82900,81600,82100,81600,81700,82300,82700,83000,85200,86000,86200,86200,85700,84900,84100,84500,84300,84500,84700,84000]
-lows = [58800,59600,60100,59500,60400,60700,61000,65600,63900,64700,63900,63900,64700,67000,66500,66000,67600,66700,67100,68300,69300,70100,71900,71600,72000,72500,73100,73200,73300,73400,72600,73000,72000,72100,72300,74000,78200,77300,77300,80200,81600,82100,82700,83000,89500,87800,89100,88700,88000,84100,83600,86500,86500,86800,86300,86500,85600,83200,82000,81000,83700,83400,82100,82500,83000,82700,81600,83300,84200,83000,82100,81000,82200,81100,81300,83000,82000,83000,82800,82200,81100,81600,80600,80700,81000,82400,81800,82100,82000,82600,81800,81700,81800,80700,80800,81000,81000,81300,81400,82000,83900,84800,85100,85400,84100,83400,83100,82800,83400,83400,83600,83300]
-print(len(date))
-print(len(highs))
-print(len(lows))
+class MainFlow():
+  def __init__(self) -> None:
+    self.finance_manager = FinanceManager()
+    self.flag_pattern = FlagPattern()
+    self.decide = Decide()
+    self.wallet_manager = WalletManager()
+    #self.result_printer = ResultPrinter()
 
-flag_pattern = FlagPattern()
-buy_sell_dict = {}
+    self.data_init()
+    self.data_dict = {}
+        
+  def data_init(self):
+    df = self.finance_manager.get_sise_years('005930')
+    df = self.finance_manager.list_to_df(df)
+    self.finance_manager.save_to_csv(df, 'stock_data.csv')
 
-for i in range(len(highs)):
-  print()
-  print("=====================================")
-  print(date[i])
-  result = flag_pattern.pattern_match(highs[i], lows[i])
-  
-  if result[0] != None:
-    buy_sell_dict[date[i]] = result[0]
+    self.date_datas = self.finance_manager.get_datas("날짜")
+    self.high_datas = self.finance_manager.get_datas("고가")
+    self.low_datas = self.finance_manager.get_datas("저가")
+    self.close_datas = self.finance_manager.get_datas("종가")
+    
+  def run(self):
+    
+    for i in range(len(self.date_datas)):
+      print("===================================================")
+      print(self.date_datas[i])
+      is_match, _ = self.flag_pattern.pattern_match(self.high_datas[i], self.low_datas[i])
+      money_percent, is_buy = self.decide.get_decide(self.close_datas[i], is_match)
+      print(money_percent, is_buy)
+      print()
+      self.record(i, is_buy)
 
-  print(result)
-
-  print()
-  for key, val in buy_sell_dict.items():
-    print(key, ":", val)
+  def record(self, i, is_buy):
+    if is_buy != None:
+      self.data_dict[self.date_datas[i]] = is_buy
+      
+    for k, v in self.data_dict.items():
+      print(k, ":", v)
+      
+if __name__ == "__main__":
+  main_flow = MainFlow()
+  main_flow.run()
