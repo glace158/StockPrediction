@@ -44,6 +44,13 @@ class WalletManager:
             return result
         elif decision is None:
             pass 
+            
+    def get_yield(self):
+        initial = self.wallet.get_initial_money()
+        now = self.wallet.get_money()
+        yield_percentage = ((now - initial) / initial) * 100
+        return round(yield_percentage, 1)
+        
     def _buy(self, percent, close):
         print(f"initial assets : {self.wallet.get_money()}")
         buy_amount = int(self.wallet.get_money() * percent / 100)
@@ -63,6 +70,7 @@ class WalletManager:
         self.wallet.add_money(num_of_stocks_to_sell * close)
         print(f"매도 예정 금액 : {sell_amount} won, 매도 주식  : {num_of_stocks_to_sell} 보유 주식 수: {self.wallet.get_stocks_held()}, 현재 자산: {self.wallet.get_money()}")
         return sell_amount
+        
 if __name__ == "__main__":
     wallet_manager = WalletManager()
     #매수 예시
@@ -73,3 +81,5 @@ if __name__ == "__main__":
     percent_to_sell = 50
     close_price_to_sell = 45450
     wallet_manager.market_watch(percent_to_sell, False, close_price_to_sell)
+    #수익률 출력 예시
+    print(wallet_manager.get_yield())
