@@ -1,67 +1,64 @@
+import pandas as pd
 import matplotlib.pyplot as plt
-class ResultPrinter(FinanceManager):
-    def __init__(self, wallet):
-        super().__init__()
-        self.wallet = wallet
 
-    def get_sise_days(self, code, days=30):
-        import datetime
-        end_time = datetime.date.today()
-        start_time = end_time - datetime.timedelta(days)
-        start_time_str = start_time.strftime('%Y%m%d')
-        end_time_str = end_time.strftime('%Y%m%d')
+class ResultPrinter:
+    def __init__(self, date, decision, close):
+        #메인에서 받아올 정보들 : 날짜, 매수매도bool, 종가
+        self.date = date
+        self.decision = decision
+        self.close = close
+        self.result = dict(zip(date, decision))
 
-        get_param = {
-            'symbol': code,
-            'requestType': 1,
-            'startTime': start_time_str,
-            'endTime': end_time_str,
-            'timeframe': 'day'
-        }
-        get_param = parse.urlencode(get_param)
-        url = "https://api.finance.naver.com/siseJson.naver?%s" % get_param
-        response = requests.get(url)
-        data_list = literal_eval(response.text.strip())
+    def get_result(self):
+        return self.result
 
-        data_dict_list = []
-        for data in data_list:
-            data_dict = {
-                '날짜': data[0],
-                '시가': data[1],
-                '고가': data[2],
-                '저가': data[3],
-                '종가': data[4],
-            }
-            data_dict_list.append(data_dict)
-        self.data = pd.DataFrame(data_dict_list)
+    def save_to_csv(self, filename):
+        df = pd.DataFrame(list(self.result.items()), columns=['Date', 'Decision'])
+        df.to_csv(filename, index=False)
+        print(f"Result saved to {filename}")
 
-    def printColumnGraph(self, column_data_x, column_data_y, x_label, y_label, title, figsize=(12, 8)):
-        if not isinstance(column_data_x, str) and not isinstance(column_data_y, str):
-            plt.figure(figsize=figsize)  # Set the size of the figure
-            plt.plot(column_data_x, column_data_y)
-            plt.xlabel(x_label)
-            plt.ylabel(y_label)
-            plt.title(title)
-            plt.show()
-        else:
-            print("Error: Invalid column data.")
+    def load_from_csv(self, filename):
+        df = pd.read_csv(filename)
+        self.result = dict(zip(df['Date'], df['Decision']))
+        print(f"Result loaded from {filename}")
 
-    def calculate_return_rate(self):
-        initial_money = self.wallet.get_initial_money()
-        current_money = self.wallet.get_money()
+    def plot_graph(self):
+        x_values = self.date
+        y_values_close = self.close
+        y_values_decision = [1 if value else 0 for value in self.decision]
 
-        if initial_money != 0:
-            return_rate = ((current_money - initial_money) / initial_money) * 100
-            return return_rate
-        else:
-            print("Initial money is 0. Cannot calculate return rate.")
-     @staticmethod
-    def market_watch(wallet, percent, decision):
-        if decision is True:
-            result = TradeManager.buy(wallet, percent)
-            return result
-        elif decision is False:
-            result = TradeManager.sell(wallet, percent)
-            return result
-        elif decision is None:
-            pass 
+        # True는 빨간색 네모, False는 파란색 네모
+        colors = ['red' if value else 'blue' for value in self.decision]
+        plt.plot(x_values, y_values_close, label='Close', color='black', marker='o', linestyle='-', linewidth=1)
+        plt.scatter(x_values, y_values_close, c=colors, marker='s', label='Decision', s=100)
+        for i, value in enumerate(self.decision):
+            if value:
+                plt.text(x_values[i], y_values_close[i], 'BUY', color='red', ha='center', va='bottom')
+            else:
+                plt.text(x_values[i], y_values_close[i], 'SELL', color='blue', ha='center', va='top')
+
+        plt.xlabel('Date')
+        plt.ylabel('Close')
+        plt.title('Close and Decision Over Time')
+        plt.legend()
+        plt.show()
+if __name__ == "__main__":
+    # 예시 데이터
+    date_list = ['2023-01-01', '2023-01-02', '2023-01-03']
+    decision_list = [True, False, True]
+    close_list = [100, 120, 90]
+
+    # ResultPrinter 인스턴스 생성
+    result_printer = ResultPrinter(date_list, decision_list, close_list)
+
+    # 결과 출력
+    print("Result:", result_printer.get_result())
+
+    # CSV로 저장
+    result_printer.save_to_csv('result.csv')
+
+    # CSV 불러오기
+    result_printer.load_from_csv('result.csv')
+
+    # 그래프 그리기
+    result_printer.plot_graph()
