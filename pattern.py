@@ -6,8 +6,8 @@ class FlagPattern():
     self._regression = Regression()
     self._high_datas = []
     self._low_datas = []
-    self._compare_minimum = 3
-    self._same_rate = 1.5
+    self._compare_minimum = 2
+    self._same_rate = 1.8
 
   def set_minimum(self, num):
     self._compare_minimum = num
@@ -17,8 +17,9 @@ class FlagPattern():
 
   def pattern_match(self, high_data, low_data):
     
-    print("highs :", self._high_datas)
-    print("lows :", self._low_datas)
+    print()
+    print("highs_datas :", self._high_datas)
+    print("lows_datas :", self._low_datas)
     print()
     print("------------------high----------------------")
     print()
@@ -50,12 +51,12 @@ class FlagPattern():
       self._add_datas(high_data, low_data)
       return None, -1.0
 
-    if (-1 * self._same_rate) > low_rate:
-      self._init_datas(high_data, low_data)
-      return False, low_rate
-    elif self._same_rate < high_rate:
+    if self._same_rate < high_rate:
       self._init_datas(high_data, low_data)
       return True, high_rate
+    elif (-1 * self._same_rate) > low_rate:
+      self._init_datas(high_data, low_data)
+      return False, low_rate
     else:
       self._add_datas(high_data, low_data)
       return None, -1.0

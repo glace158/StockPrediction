@@ -36,10 +36,9 @@ class PatternDecide():# 패턴 매치에 따른 매수,매도 전략
         if len(is_match) == 1 and is_match[0] == None:
             return -1.0
         
-        match_rate = is_match.count(True) / len(is_match)
+        match_rate = is_match.count(True) / len(is_match) * 100
         
-        
-        return match_rate
+        return 100
 
 class Decide():
     def __init__(self) -> None:
