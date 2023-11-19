@@ -43,18 +43,16 @@ class WalletManager:
             result = self._sell(percent, close)
             return result
         elif decision is None:
-            pass 
-            
+            pass
     def get_yield(self):
         initial = self.wallet.get_initial_money()
         now = self.wallet.get_money()
         yield_percentage = ((now - initial) / initial) * 100
         return round(yield_percentage, 1)
-        
     def _buy(self, percent, close):
         print(f"initial assets : {self.wallet.get_money()}")
         buy_amount = int(self.wallet.get_money() * percent / 100)
-        num_of_stocks = buy_amount // close 
+        num_of_stocks = buy_amount // close
         spend_assets = buy_amount - (buy_amount % close)
         self.wallet.spend_money(spend_assets)
         self.wallet.add_stocks_held(num_of_stocks)
@@ -63,23 +61,12 @@ class WalletManager:
 
     def _sell(self, percent, close):
         print(f"initial assets : {self.wallet.get_money()}")
-        sell_amount = int(self.wallet.get_money() * percent / 100)
-        num_of_stocks_to_sell = sell_amount // close   
+        num_of_stocks_to_sell = int(self.wallet.get_stocks_held() * percent / 100 ) 
+        sell_amount = num_of_stocks_to_sell * close
+
         self.wallet.spend_stocks_held(num_of_stocks_to_sell)
-        remaining_money = sell_amount % close
-        self.wallet.add_money(num_of_stocks_to_sell * close)
-        print(f"매도 예정 금액 : {sell_amount} won, 매도 주식  : {num_of_stocks_to_sell} 보유 주식 수: {self.wallet.get_stocks_held()}, 현재 자산: {self.wallet.get_money()}")
-        return sell_amount
+        self.wallet.add_money(sell_amount)
         
-if __name__ == "__main__":
-    wallet_manager = WalletManager()
-    #매수 예시
-    percent_to_buy = 30
-    close_price_to_buy = 26450
-    wallet_manager.market_watch(percent_to_buy, True, close_price_to_buy)
-    #매도 예시
-    percent_to_sell = 50
-    close_price_to_sell = 45450
-    wallet_manager.market_watch(percent_to_sell, False, close_price_to_sell)
-    #수익률 출력 예시
-    print(wallet_manager.get_yield())
+        print(f"매도 예정 금액 : {sell_amount} won, 매도 주식 수량 : {num_of_stocks_to_sell}, "
+              f"보유 주식 수: {self.wallet.get_stocks_held()}, 현재 자산: {self.wallet.get_money()}")
+        return sell_amount
