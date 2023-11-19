@@ -2,8 +2,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 class ResultPrinter:
-    def __init__(self, date, decision, close):
-        #메인에서 받아올 정보들 : 날짜, 매수매도bool, 종가
+    def __init__(self):
+        self.date = []
+        self.decision = []
+        self.close = []
+        self.result = {}
+
+    def set_data(self, date, decision, close):
         self.date = date
         self.decision = decision
         self.close = close
@@ -25,31 +30,43 @@ class ResultPrinter:
     def plot_graph(self):
         x_values = self.date
         y_values_close = self.close
-        y_values_decision = [1 if value else 0 for value in self.decision]
+        colors = []
 
-        # True는 빨간색 네모, False는 파란색 네모
-        colors = ['red' if value else 'blue' for value in self.decision]
-        plt.plot(x_values, y_values_close, label='Close', color='black', marker='o', linestyle='-', linewidth=1)
-        plt.scatter(x_values, y_values_close, c=colors, marker='s', label='Decision', s=100)
-        for i, value in enumerate(self.decision):
-            if value:
-                plt.text(x_values[i], y_values_close[i], 'BUY', color='red', ha='center', va='bottom')
+        # Assigning colors based on decision values
+        for value in self.decision:
+            if value is True:
+                colors.append('red')
+            elif value is False:
+                colors.append('blue')
             else:
+                colors.append('gray')  # or any color for 'Pass'
+
+        plt.plot(x_values, y_values_close, label='Close', color='black', marker='o', linestyle='-', linewidth=1)
+
+        for i, color in enumerate(colors):
+            if color != 'gray':  # Only plot if not 'Pass'
+                plt.scatter(x_values[i], y_values_close[i], c=color, marker='s', label='Decision', s=100)
+
+        for i, value in enumerate(self.decision):
+            if value is True:
+                plt.text(x_values[i], y_values_close[i], 'BUY', color='red', ha='center', va='bottom')
+            elif value is False:
                 plt.text(x_values[i], y_values_close[i], 'SELL', color='blue', ha='center', va='top')
 
         plt.xlabel('Date')
         plt.ylabel('Close')
         plt.title('Close and Decision Over Time')
-        plt.legend()
         plt.show()
+# 예시 사용
 if __name__ == "__main__":
     # 예시 데이터
-    date_list = ['2023-01-01', '2023-01-02', '2023-01-03']
-    decision_list = [True, False, True]
-    close_list = [100, 120, 90]
+    date_list = ['20230101', '20230102', '20230103', '20230104', '20230105', '20230106']
+    decision_list = [True, False, None, None, True,False]  # Adding None for Pass
+    close_list = [100, 120, 90, 70, 60, 120]
 
     # ResultPrinter 인스턴스 생성
-    result_printer = ResultPrinter(date_list, decision_list, close_list)
+    result_printer = ResultPrinter()
+    result_printer.set_data(date_list,decision_list,close_list)
 
     # 결과 출력
     print("Result:", result_printer.get_result())
