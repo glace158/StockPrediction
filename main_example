@@ -1,3 +1,9 @@
+from pattern import FlagPattern
+from FinanceManager import FinanceManager
+from ResultPrinter import ResultPrinter
+from stockDecide import Decide
+from Wallet_walletManager import WalletManager
+
 class MainFlow():
     def __init__(self) -> None:
         self.finance_manager = FinanceManager()
@@ -8,6 +14,7 @@ class MainFlow():
 
         self.data_init()
         self.data_dict = {}
+        self.is_buy_list = []
         
     def data_init(self):
         df = self.finance_manager.get_sise_years('005930')
@@ -19,9 +26,6 @@ class MainFlow():
         self.low_datas = self.finance_manager.get_datas("저가")
         self.close_datas = self.finance_manager.get_datas("종가")
         
-        # Initialize ResultPrinter with data
-        self.result_printer.set_data(self.date_datas, [], self.close_datas)
-
     def run(self):
         for i in range(len(self.date_datas)):
             print("===================================================")
@@ -31,8 +35,10 @@ class MainFlow():
             print(money_percent, is_buy)
             print()
             self.record(i, is_buy)
+            self.is_buy_list.append(is_buy)
 
         # After running, use ResultPrinter to plot the graph
+        self.result_printer.set_data(self.date_datas,self.is_buy_list,self.close_datas )
         self.result_printer.plot_graph()
 
     def record(self, i, is_buy):
@@ -42,9 +48,6 @@ class MainFlow():
         for k, v in self.data_dict.items():
             print(k, ":", v)
             
-        # Update ResultPrinter's data
-        self.result_printer.decision = list(self.data_dict.values())
-
 if __name__ == "__main__":
     main_flow = MainFlow()
     main_flow.run()
