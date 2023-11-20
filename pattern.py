@@ -68,8 +68,8 @@ class FlagPattern():
   def _init_datas(self, high_data, low_data):
     self._high_datas.clear()
     self._low_datas.clear()
-    self._high_datas.append(high_data)
-    self._low_datas.append(low_data)
+    #self._high_datas.append(high_data)
+    #self._low_datas.append(low_data)
 
   def _error_rate_calculation(self, pre_data:float, cur_data:float):
     rate = (cur_data - pre_data) / pre_data * 100

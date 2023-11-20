@@ -16,7 +16,7 @@ class MainFlow():
     self.data_dict = {}
         
   def data_init(self):
-    df = self.finance_manager.get_sise_years('005930')
+    df = self.finance_manager.get_sise_years('086520',1)
     df = self.finance_manager.list_to_df(df)
     self.finance_manager.save_to_csv(df, 'stock_data.csv')
     
@@ -57,9 +57,8 @@ class MainFlow():
     
     
     self.result_printer.plot_graph()
-    self.wallet_manager.get_yield()
+    print(self.wallet_manager.get_yield())
 
-      
 if __name__ == "__main__":
   main_flow = MainFlow()
   main_flow.run()

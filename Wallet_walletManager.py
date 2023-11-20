@@ -80,15 +80,12 @@ if __name__ == "__main__":
     wallet_manager = WalletManager()
     #매수 예시
     percent_to_buy = 100
-    close_price_to_buy = 26450
+    close_price_to_buy = 26050
     wallet_manager.market_watch(percent_to_buy, True, close_price_to_buy)
     #매도 예시
     percent_to_sell = 100
-    close_price_to_sell = 45450
+    close_price_to_sell = 35350
     wallet_manager.market_watch(percent_to_sell, False, close_price_to_sell)
     
-    percent_to_sell = 100
-    close_price_to_sell = 30000
-    wallet_manager.market_watch(percent_to_sell, False, close_price_to_sell)
     #수익률 출력 예시
     print(wallet_manager.get_yield())
